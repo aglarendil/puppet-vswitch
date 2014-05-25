@@ -14,6 +14,28 @@ Puppet::Type.type(:vs_bridge).provide(:ovs) do
     vsctl("add-br", @resource[:name])
     ip("link", "set", @resource[:name], "up")
     external_ids = @resource[:external_ids] if@resource[:external_ids]
+    vsctl("set-controller", @resource[:name], @resource[:controller])
+    vsctl('set','Bridge',@resource[:name],"other-config:datapath-id=#{@resource[:datapath_id]}")
+  end
+
+  def controller
+    vsctl("get-controller", @resource[:name])
+    rescue Puppet::ExecutionFailure
+      return nil
+  end
+
+  def controller=(value)
+    vsctl("set-controller", @resource[:name], value)
+  end
+
+  def datapath_id
+    vsctl('get','Bridge',@resource[:name],'datapath_id').gsub('"','')
+    rescue Puppet::ExecutionFailure
+      return nil
+  end
+
+  def datapath_id=(value)
+     vsctl('set','Bridge',@resource[:name],"other-config:datapath-id=#{value}")
   end
 
   def destroy

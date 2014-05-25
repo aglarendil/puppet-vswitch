@@ -15,5 +15,12 @@ module Puppet
       desc "External IDs for the bridge"
     end
 
+    newproperty(:controller) do
+      desc "Controller URL for the bridge"
+    end
+
+    newproperty(:datapath_id) do
+      desc "Bridge datapath ID"
+    end
   end
 end
